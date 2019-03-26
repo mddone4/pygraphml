@@ -27,12 +27,35 @@ class GraphMLParser:
         root = doc.createElement('graphml')
         doc.appendChild(root)
 
-        # Add attributs
-        for a in graph.get_attributs():
+
+        # Graph attributes
+        attr_node = doc.createElement('key')
+        attr_node.setAttribute('id', 'Pages')
+        attr_node.setAttribute('attr.name', 'Pages')
+        attr_node.setAttribute('for', 'graph')
+        root.appendChild(attr_node)
+
+        attr_node = doc.createElement('key')
+        attr_node.setAttribute('id', 'Symbols')
+        attr_node.setAttribute('attr.name', 'Symbols')
+        attr_node.setAttribute('for', 'graph')
+        root.appendChild(attr_node)
+
+        # Add attributes
+        for a in graph.get_nodes_attributes():
             attr_node = doc.createElement('key')
             attr_node.setAttribute('id', a.name)
             attr_node.setAttribute('attr.name', a.name)
             attr_node.setAttribute('attr.type', a.type)
+            attr_node.setAttribute('for', 'node')
+            root.appendChild(attr_node)
+
+        for a in graph.get_edges_attributes():
+            attr_node = doc.createElement('key')
+            attr_node.setAttribute('id', a.name)
+            attr_node.setAttribute('attr.name', a.name)
+            attr_node.setAttribute('attr.type', a.type)
+            attr_node.setAttribute('for', 'edge')
             root.appendChild(attr_node)
 
         graph_node = doc.createElement('graph')
@@ -42,6 +65,37 @@ class GraphMLParser:
         else:
             graph_node.setAttribute('edgedefault', 'undirected')
         root.appendChild(graph_node)
+
+        # Add data
+        # Pages
+        pages_node = doc.createElement('data')
+        pages_node.setAttribute('key', 'Pages')
+        i = 0
+        for p in graph.pages():
+            print(p.name)
+            page_node = doc.createElement('Page')
+            page_node.setAttribute('isCurrent', 'true' if i == 0 else 'false')
+            page_node.setAttribute('order', str(i))
+            name_node = doc.createElement('name')
+            name_node.appendChild(doc.createTextNode(p.name))
+            page_node.appendChild(name_node)
+            frame_node = doc.createElement('frame')
+            frame_node.appendChild(doc.createTextNode(p.frame))
+            page_node.appendChild(frame_node)
+            pages_node.appendChild(page_node)
+        graph_node.appendChild(pages_node)
+
+        # Symbols
+        symbols_node = doc.createElement('data')
+        symbols_node.setAttribute('key', 'Symbols')
+        i = 0
+        for s in graph.symbols():
+            symbol_node = doc.createElement('Symbol')
+            name_node = doc.createElement('name')
+            name_node.appendChild(doc.createTextNode(s.name))
+            symbol_node.appendChild(name_node)
+            symbols_node.appendChild(symbol_node)
+        graph_node.appendChild(symbols_node)
 
         # Add nodes
         for n in graph.nodes():

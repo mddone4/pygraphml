@@ -7,6 +7,8 @@ from __future__ import print_function
 
 from . import Node
 from . import Edge
+from . import Page
+from . import Symbol
 
 from collections import deque
 
@@ -26,6 +28,8 @@ class Graph:
 
         self._nodes = []
         self._edges = []
+        self._pages = []
+        self._symbols = []
         self._root = None
         self.directed = True
 
@@ -113,6 +117,18 @@ class Graph:
 
         return self._edges
 
+    def pages(self, ):
+        """
+        """
+
+        return self._pages
+
+    def symbols(self, ):
+        """
+        """
+
+        return self._symbols
+
     def children(self, node):
         """
         """
@@ -128,6 +144,24 @@ class Graph:
         self._nodes.append(n)
 
         return n
+
+    def add_page(self, name="", frame=""):
+        """
+        """
+
+        p = Page(name, frame)
+        self._pages.append(p)
+
+        return p
+    
+    def add_symbol(self, name=""):
+        """
+        """
+
+        s = Symbol(name)
+        self._symbols.append(s)
+
+        return s
 
     def add_edge(self, n1, n2, directed=False):
         """
@@ -193,7 +227,7 @@ class Graph:
                 self.set_root(n)
                 return n
 
-    def get_attributs(self):
+    def get_attributes(self):
         """
         """
 
@@ -213,6 +247,33 @@ class Graph:
 
         return attr_obj
 
+    def get_nodes_attributes(self):
+        """
+        """
+
+        attr = []
+        attr_obj = []
+        for n in self.nodes():
+            for a in n.attr:
+                if a not in attr:
+                    attr.append(a)
+                    attr_obj.append(n.attr[a])
+
+        return attr_obj
+
+    def get_edges_attributes(self):
+        """
+        """
+
+        attr = []
+        attr_obj = []
+        for e in self.edges():
+            for a in e.attr:
+                if a not in attr:
+                    attr.append(a)
+                    attr_obj.append(e.attr[a])
+
+        return attr_obj
 
     def show(self, show_label=False):
         """
